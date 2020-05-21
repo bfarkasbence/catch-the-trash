@@ -30,7 +30,7 @@ namespace catch_the_trash.Controllers
 
         // GET: api/Users/5
         [HttpGet("{id}")]
-        public async Task<ActionResult<User>> GetUser(int id)
+        public async Task<ActionResult<User>> GetUser(Guid id)
         {
             var user = await _context.User.FindAsync(id);
 
@@ -46,7 +46,7 @@ namespace catch_the_trash.Controllers
         // To protect from overposting attacks, please enable the specific properties you want to bind to, for
         // more details see https://aka.ms/RazorPagesCRUD.
         [HttpPut("{id}")]
-        public async Task<IActionResult> PutUser(int id, User user)
+        public async Task<IActionResult> PutUser(Guid id, User user)
         {
             if (id != user.UserId)
             {
@@ -80,6 +80,7 @@ namespace catch_the_trash.Controllers
         [HttpPost]
         public async Task<ActionResult<User>> PostUser(User user)
         {
+            user.UserId = Guid.NewGuid();
             _context.User.Add(user);
             await _context.SaveChangesAsync();
 
@@ -88,7 +89,7 @@ namespace catch_the_trash.Controllers
 
         // DELETE: api/Users/5
         [HttpDelete("{id}")]
-        public async Task<ActionResult<User>> DeleteUser(int id)
+        public async Task<ActionResult<User>> DeleteUser(Guid id)
         {
             var user = await _context.User.FindAsync(id);
             if (user == null)
@@ -102,7 +103,7 @@ namespace catch_the_trash.Controllers
             return user;
         }
 
-        private bool UserExists(int id)
+        private bool UserExists(Guid id)
         {
             return _context.User.Any(e => e.UserId == id);
         }
