@@ -80,7 +80,8 @@ namespace catch_the_trash.Controllers
         [HttpPost]
         public async Task<ActionResult<User>> PostUser(User user)
         {
-            user.UserId = Guid.NewGuid();
+
+            if (UserNameExist(user.UserName) || UserEmailExist(user.Email)) { return BadRequest() ;}
             _context.User.Add(user);
             await _context.SaveChangesAsync();
 
@@ -106,6 +107,16 @@ namespace catch_the_trash.Controllers
         private bool UserExists(Guid id)
         {
             return _context.User.Any(e => e.UserId == id);
+        }
+
+        private bool UserNameExist(string userName)
+        {
+            return _context.User.Any(e => e.UserName.ToLower() == userName.ToLower());
+        }
+
+        private bool UserEmailExist(string email)
+        {
+            return _context.User.Any(e => e.Email.ToLower() == email.ToLower());
         }
     }
 }
