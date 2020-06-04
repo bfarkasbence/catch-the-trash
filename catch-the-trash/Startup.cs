@@ -41,7 +41,6 @@ namespace catch_the_trash
                 options.MultipartBodyLengthLimit = 16777216;
             });
 
-
             services.AddCors();
         }
 

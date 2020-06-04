@@ -28,10 +28,13 @@ namespace catch_the_trash.Controllers
             public IFormFile files { get; set; }
         }
 
-        
+        private string[] permittedExtensions = { ".jpg", ".jpeg", ".png" };
+
         [HttpPost]
         public async Task<string> Post([FromForm]FileUploadAPI objFile)
         {
+            
+
             try
             {
                 if (objFile.files.Length > 0)
@@ -40,11 +43,21 @@ namespace catch_the_trash.Controllers
                     {
                         Directory.CreateDirectory(_environment.WebRootPath + "\\Upload\\");
                     }
-                    using (FileStream fileStream = System.IO.File.Create(_environment.WebRootPath + "\\Upload\\" + objFile.files.FileName))
+
+                    var ext = Path.GetExtension(objFile.files.FileName).ToLowerInvariant();
+
+                    if (permittedExtensions.Contains(ext))
+                    {                
+                            using (FileStream fileStream = System.IO.File.Create(_environment.WebRootPath + "\\Upload\\" + Guid.NewGuid() + ext))
+                        {
+                            objFile.files.CopyTo(fileStream);
+                            fileStream.Flush();
+                            return "\\Upload\\" + objFile.files.FileName;
+                        }
+                    }
+                    else
                     {
-                        objFile.files.CopyTo(fileStream);
-                        fileStream.Flush();
-                        return "\\Upload\\" + objFile.files.FileName;
+                        return "Wrong extension";
                     }
                 }
                 else
