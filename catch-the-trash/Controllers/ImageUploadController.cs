@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -10,6 +11,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace catch_the_trash.Controllers
 {
+    [EnableCors]
     [Route("api/[controller]")]
     [ApiController]
     public class ImageUploadController : ControllerBase
@@ -25,6 +27,8 @@ namespace catch_the_trash.Controllers
         {
             public IFormFile files { get; set; }
         }
+
+        
         [HttpPost]
         public async Task<string> Post([FromForm]FileUploadAPI objFile)
         {
