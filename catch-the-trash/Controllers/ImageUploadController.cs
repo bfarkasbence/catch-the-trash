@@ -47,12 +47,13 @@ namespace catch_the_trash.Controllers
                     var ext = Path.GetExtension(objFile.files.FileName).ToLowerInvariant();
 
                     if (permittedExtensions.Contains(ext))
-                    {                
-                            using (FileStream fileStream = System.IO.File.Create(_environment.WebRootPath + "\\Upload\\" + Guid.NewGuid() + ext))
+                    {
+                        string newFileName = Guid.NewGuid() + ext;
+                            using (FileStream fileStream = System.IO.File.Create(_environment.WebRootPath + "\\Upload\\" + newFileName))
                         {
                             objFile.files.CopyTo(fileStream);
                             fileStream.Flush();
-                            return "\\Upload\\" + objFile.files.FileName;
+                            return newFileName;
                         }
                     }
                     else
