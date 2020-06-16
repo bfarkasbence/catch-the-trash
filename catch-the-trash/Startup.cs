@@ -12,6 +12,8 @@ using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Microsoft.EntityFrameworkCore;
 using catch_the_trash.Data;
+using Microsoft.AspNetCore.Identity;
+using catch_the_trash.Models;
 
 namespace catch_the_trash
 {
@@ -31,6 +33,17 @@ namespace catch_the_trash
 
             services.AddDbContext<UserContext>(options =>
                     options.UseSqlServer(Configuration.GetConnectionString("UserContext")));
+
+            services.AddIdentity<User, IdentityRole>(options=> {
+                options.Password.RequireDigit = false;
+                options.Password.RequiredLength = 5;
+                options.Password.RequireNonAlphanumeric = false;
+                options.Password.RequireUppercase = false;
+                options.Password.RequireLowercase = false;
+            }
+                )
+           .AddEntityFrameworkStores<UserContext>()
+           .AddDefaultTokenProviders();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -51,6 +64,8 @@ namespace catch_the_trash
             {
                 endpoints.MapControllers();
             });
+
+            app.UseAuthentication();
         }
     }
 }

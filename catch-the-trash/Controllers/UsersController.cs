@@ -7,6 +7,10 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using catch_the_trash.Data;
 using catch_the_trash.Models;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Antiforgery;
 
 namespace catch_the_trash.Controllers
 {
@@ -14,25 +18,30 @@ namespace catch_the_trash.Controllers
     [ApiController]
     public class UsersController : ControllerBase
     {
-        private readonly UserContext _context;
+        private readonly UserManager<User> _userManager;
+        private readonly SignInManager<User> _signInManager;
 
-        public UsersController(UserContext context)
+        public UsersController(
+            UserManager<User> userManager,
+            SignInManager<User> signInManager)
         {
-            _context = context;
+            _userManager = userManager;
+            _signInManager = signInManager;
         }
 
-        // GET: api/Users
+
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<User>>> GetUser()
+        public async Task<IQueryable<User>> GetUsers()
         {
-            return await _context.User.ToListAsync();
+            var users = await Task.Run(() => { return _userManager.Users; });
+            return users;
         }
 
         // GET: api/Users/5
         [HttpGet("{id}")]
         public async Task<ActionResult<User>> GetUser(Guid id)
         {
-            var user = await _context.User.FindAsync(id);
+            var user = await _userManager.FindByIdAsync(id.ToString());
 
             if (user == null)
             {
@@ -48,75 +57,48 @@ namespace catch_the_trash.Controllers
         [HttpPut("{id}")]
         public async Task<IActionResult> PutUser(Guid id, User user)
         {
-            if (id != user.UserId)
+            Console.WriteLine(user.Id);
+            if (id.ToString() != user.Id)
             {
                 return BadRequest();
             }
 
-            _context.Entry(user).State = EntityState.Modified;
-
-            try
-            {
-                await _context.SaveChangesAsync();
-            }
-            catch (DbUpdateConcurrencyException)
-            {
-                if (!UserExists(id))
-                {
-                    return NotFound();
-                }
-                else
-                {
-                    throw;
-                }
-            }
-
-            return NoContent();
+            var result = await _userManager.UpdateAsync(user);
+            return Ok(result);
+            //_context.Entry(user).State = EntityState.Modified;
         }
 
         // POST: api/Users
         // To protect from overposting attacks, please enable the specific properties you want to bind to, for
         // more details see https://aka.ms/RazorPagesCRUD.
         [HttpPost]
+        [AllowAnonymous]
         public async Task<ActionResult<User>> PostUser(User user)
         {
 
-            if (UserNameExist(user.UserName) || UserEmailExist(user.Email)) { return BadRequest() ;}
-            _context.User.Add(user);
-            await _context.SaveChangesAsync();
-
-            return CreatedAtAction("GetUser", new { id = user.UserId }, user);
+            var userToCreate = new User { Email = user.Email, UserName = user.UserName };
+            var result = await _userManager.CreateAsync(userToCreate, user.Password);
+            if (result.Succeeded)
+            {
+                return CreatedAtAction("GetUser", new User(), user);
+            }
+            else return NotFound();
         }
 
         // DELETE: api/Users/5
         [HttpDelete("{id}")]
         public async Task<ActionResult<User>> DeleteUser(Guid id)
         {
-            var user = await _context.User.FindAsync(id);
-            if (user == null)
+            var user = await _userManager.FindByIdAsync(id.ToString());
+            var result = await _userManager.DeleteAsync(user);
+            if (result.Succeeded)
             {
-                return NotFound();
+                return Ok(result);
             }
 
-            _context.User.Remove(user);
-            await _context.SaveChangesAsync();
 
-            return user;
+            return NotFound();
         }
 
-        private bool UserExists(Guid id)
-        {
-            return _context.User.Any(e => e.UserId == id);
-        }
-
-        private bool UserNameExist(string userName)
-        {
-            return _context.User.Any(e => e.UserName.ToLower() == userName.ToLower());
-        }
-
-        private bool UserEmailExist(string email)
-        {
-            return _context.User.Any(e => e.Email.ToLower() == email.ToLower());
-        }
     }
 }
