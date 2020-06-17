@@ -48,7 +48,7 @@ namespace catch_the_trash.Controllers
                 return NotFound();
             }
 
-            return user;
+            return Ok(user);
         }
 
         // PUT: api/Users/5
@@ -80,7 +80,7 @@ namespace catch_the_trash.Controllers
             var result = await _userManager.CreateAsync(userToCreate, user.Password);
             if (result.Succeeded)
             {
-                return CreatedAtAction("GetUser", new User(), user);
+                return CreatedAtAction("GetUser", new User(), userToCreate);
             }
             else return NotFound();
         }
