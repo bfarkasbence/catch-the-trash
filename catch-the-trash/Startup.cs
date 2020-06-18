@@ -30,6 +30,17 @@ namespace catch_the_trash
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddControllers();
+            services.AddCors(options =>
+            {
+                options.AddPolicy("AllowAllHeaders",
+                corsbuilder =>
+                {
+                    corsbuilder.AllowAnyOrigin()
+                    .AllowAnyHeader()
+                    .AllowAnyMethod()
+                    .WithOrigins("http://localhost:3000");
+                });
+            });
 
             services.AddDbContext<UserContext>(options =>
                     options.UseSqlServer(Configuration.GetConnectionString("UserContext")));
@@ -53,11 +64,19 @@ namespace catch_the_trash
             {
                 app.UseDeveloperExceptionPage();
             }
+            else
+            {
+                app.UseHsts();
+            }
+
+
 
             app.UseHttpsRedirection();
 
             app.UseRouting();
 
+            app.UseCors("AllowAllHeaders");
+            
             app.UseAuthorization();
 
             app.UseEndpoints(endpoints =>
