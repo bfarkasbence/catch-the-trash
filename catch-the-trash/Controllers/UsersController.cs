@@ -11,11 +11,13 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Antiforgery;
+using Microsoft.AspNetCore.Cors;
 
 namespace catch_the_trash.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
+    [EnableCors("AllowAllHeaders")]
     public class UsersController : ControllerBase
     {
         private readonly UserManager<User> _userManager;
@@ -82,7 +84,7 @@ namespace catch_the_trash.Controllers
             {
                 return CreatedAtAction("GetUser", new User(), userToCreate);
             }
-            else return NotFound();
+            else return NotFound("Something went wrong...");
         }
 
         // DELETE: api/Users/5

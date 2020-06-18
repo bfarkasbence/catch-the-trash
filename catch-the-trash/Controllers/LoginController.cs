@@ -5,6 +5,7 @@ using System.Security.Claims;
 using System.Threading.Tasks;
 using catch_the_trash.Models;
 using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
@@ -13,6 +14,7 @@ namespace catch_the_trash.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
+    [EnableCors]
     public class LoginController : ControllerBase
     {
         private readonly SignInManager<User> _signInManager;
@@ -33,13 +35,14 @@ namespace catch_the_trash.Controllers
             if(user != null && 
                 await _userManager.CheckPasswordAsync(user, loginData.Password))
             {
+                //await _signInManager.SignInAsync(user,false);
                 var identity = new ClaimsIdentity(IdentityConstants.ApplicationScheme);
                 identity.AddClaim(new Claim(ClaimTypes.NameIdentifier, user.Id));
                 identity.AddClaim(new Claim(ClaimTypes.Name, user.UserName));
 
                 await HttpContext.SignInAsync(IdentityConstants.ApplicationScheme,
                     new ClaimsPrincipal(identity));
-                return Ok();
+                return Ok("Login");
             }
             return NotFound();
             
