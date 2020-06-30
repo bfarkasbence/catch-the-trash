@@ -15,5 +15,7 @@ namespace catch_the_trash.Data
         }
 
         public DbSet<catch_the_trash.Models.User> User { get; set; }
+
+        public DbSet<catch_the_trash.Models.Report> Report { get; set; }
     }
 }
