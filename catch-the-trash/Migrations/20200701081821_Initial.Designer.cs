@@ -10,7 +10,7 @@ using catch_the_trash.Data;
 namespace catch_the_trash.Migrations
 {
     [DbContext(typeof(UserContext))]
-    [Migration("20200701074822_Initial")]
+    [Migration("20200701081821_Initial")]
     partial class Initial
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
