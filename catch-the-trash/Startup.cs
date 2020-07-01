@@ -30,6 +30,18 @@ namespace catch_the_trash
         {
             services.AddControllers();
 
+            services.AddCors(options =>
+            {
+                options.AddPolicy("AllowAllHeaders",
+                corsbuilder =>
+                {
+                    corsbuilder.AllowAnyOrigin()
+                    .AllowAnyHeader()
+                    .AllowAnyMethod()
+                    .WithOrigins("http://localhost:3000");
+                });
+            });
+
             services.AddDbContext<UserContext>(options =>
                     options.UseSqlServer(@"Data Source = (localdb)\MSSQLLocalDB; Initial Catalog = Catch - the - trash; Integrated Security = True; Connect Timeout = 30; Encrypt = False; TrustServerCertificate = False; ApplicationIntent = ReadWrite; MultiSubnetFailover = False"));
 
@@ -45,11 +57,17 @@ namespace catch_the_trash
             {
                 app.UseDeveloperExceptionPage();
             }
+            else
+            {
+                app.UseHsts();
+            }
 
             app.UseHttpsRedirection();
 
             app.UseRouting();
 
+            app.UseCors("AllowAllHeaders");
+           
             app.UseAuthentication();
             app.UseAuthorization();
 
