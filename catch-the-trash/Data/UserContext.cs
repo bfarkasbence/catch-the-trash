@@ -12,6 +12,9 @@ namespace catch_the_trash.Data
         public UserContext(DbContextOptions<UserContext> options)
             : base(options)
         {
+
         }
+
+        public DbSet<catch_the_trash.Models.Report> Report { get; set; }
     }
 }
