@@ -38,6 +38,7 @@ namespace catch_the_trash
                     corsbuilder.AllowAnyOrigin()
                     .AllowAnyHeader()
                     .AllowAnyMethod()
+                    .AllowCredentials()
                     .WithOrigins("http://localhost:3000");
                 });
             });
@@ -55,6 +56,12 @@ namespace catch_the_trash
                 )
            .AddEntityFrameworkStores<UserContext>()
            .AddDefaultTokenProviders();
+
+            services.ConfigureApplicationCookie(config =>
+            {
+                config.Cookie.Name = "Identity.Cookie";
+                config.LoginPath = "/Login"; 
+            });
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
