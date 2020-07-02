@@ -21,7 +21,7 @@ namespace catch_the_trash.Controllers
         public IActionResult Get(double lon, double lat)
         {
             var json = GetCityNameByLocation(lon, lat);
-            City city = ParseJson(json);
+            CityModel city = ParseJson(json);
 
             return Ok(city);
         }
@@ -41,9 +41,9 @@ namespace catch_the_trash.Controllers
             return json;
         }
 
-        private City ParseJson(string json)
+        private CityModel ParseJson(string json)
         {
-            var city = new City();
+            var city = new CityModel();
 
             var jo = JObject.Parse(json);
 

@@ -17,16 +17,16 @@ namespace catch_the_trash.Controllers
     [ApiController]
     public class ReportsController : ControllerBase
     {
-        private readonly UserContext _context;
+        private readonly ApplicationContext _context;
 
-        public ReportsController(UserContext context)
+        public ReportsController(ApplicationContext context)
         {
             _context = context;
         }
 
         // GET: api/Reports
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<Report>>> GetReport()
+        public async Task<ActionResult<IEnumerable<ReportModel>>> GetReport()
         {
             return await _context.Report.ToListAsync();
         }
@@ -34,7 +34,7 @@ namespace catch_the_trash.Controllers
 
         // GET: api/Reports/5
         [HttpGet("{id}")]
-        public async Task<ActionResult<Report>> GetReport(int id)
+        public async Task<ActionResult<ReportModel>> GetReport(int id)
         {
             var report = await _context.Report.FindAsync(id);
 
@@ -50,7 +50,7 @@ namespace catch_the_trash.Controllers
         // To protect from overposting attacks, enable the specific properties you want to bind to, for
         // more details, see https://go.microsoft.com/fwlink/?linkid=2123754.
         [HttpPut("{id}")]
-        public async Task<IActionResult> PutReport(int id, Report report)
+        public async Task<IActionResult> PutReport(int id, ReportModel report)
         {
             if (id != report.Id)
             {
@@ -82,7 +82,7 @@ namespace catch_the_trash.Controllers
         // To protect from overposting attacks, enable the specific properties you want to bind to, for
         // more details, see https://go.microsoft.com/fwlink/?linkid=2123754.
         [HttpPost]
-        public async Task<ActionResult<Report>> PostReport(Report report)
+        public async Task<ActionResult<ReportModel>> PostReport(ReportModel report)
         {
             _context.Report.Add(report);
             await _context.SaveChangesAsync();
@@ -92,7 +92,7 @@ namespace catch_the_trash.Controllers
 
         // DELETE: api/Reports/5
         [HttpDelete("{id}")]
-        public async Task<ActionResult<Report>> DeleteReport(int id)
+        public async Task<ActionResult<ReportModel>> DeleteReport(int id)
         {
             var report = await _context.Report.FindAsync(id);
             if (report == null)

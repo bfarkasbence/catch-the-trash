@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 
 namespace catch_the_trash.Models
 {
-    public class Report
+    public class ReportModel
     {
         public int Id { get; set; }
 
@@ -15,6 +15,7 @@ namespace catch_the_trash.Models
 
         public string Comment { get; set; }
 
-        public string Images { get; set; }
+        public ICollection<ImageModel> Images { get; set; }
+
     }
 }

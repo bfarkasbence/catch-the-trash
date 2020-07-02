@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 
 namespace catch_the_trash.Models
 {
-    public class City
+    public class CityModel
     {
         public string CityName { get; set; }
         public string Region { get; set; }

@@ -45,8 +45,8 @@ namespace catch_the_trash
                 });
             });
 
-            services.AddDbContext<UserContext>(options =>
-                    options.UseSqlServer(Configuration.GetConnectionString("UserContext")));
+            services.AddDbContext<ApplicationContext>(options =>
+                    options.UseSqlServer(Configuration.GetConnectionString("ApplicationContext")));
 
 
             services.Configure<FormOptions>(options =>
@@ -62,7 +62,7 @@ namespace catch_the_trash
                 options.Password.RequireLowercase = false;
             }
                 )
-           .AddEntityFrameworkStores<UserContext>()
+           .AddEntityFrameworkStores<ApplicationContext>()
            .AddDefaultTokenProviders();
 
             services.ConfigureApplicationCookie(config =>

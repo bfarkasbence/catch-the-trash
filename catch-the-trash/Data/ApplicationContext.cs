@@ -7,14 +7,16 @@ using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 
 namespace catch_the_trash.Data
 {
-    public class UserContext : IdentityDbContext
+    public class ApplicationContext : IdentityDbContext
     {
-        public UserContext(DbContextOptions<UserContext> options)
+        public ApplicationContext(DbContextOptions<ApplicationContext> options)
             : base(options)
         {
 
         }
 
-        public DbSet<catch_the_trash.Models.Report> Report { get; set; }
+        public DbSet<catch_the_trash.Models.ReportModel> Report { get; set; }
+
+        public DbSet<catch_the_trash.Models.ImageModel> Image { get; set; }
     }
 }
