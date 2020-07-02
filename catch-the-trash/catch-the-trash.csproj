@@ -7,10 +7,22 @@
 
   <ItemGroup>
     <PackageReference Include="HtmlAgilityPack" Version="1.11.24" />
+    <Compile Remove="Migrations\20200521170347_InitialCreate.cs" />
+    <Compile Remove="Migrations\20200521170347_InitialCreate.Designer.cs" />
+    <Compile Remove="Migrations\20200630112158_Initial.cs" />
+    <Compile Remove="Migrations\20200630112158_Initial.Designer.cs" />
+    <Compile Remove="Migrations\20200630112609_Modify.cs" />
+    <Compile Remove="Migrations\20200630112609_Modify.Designer.cs" />
+    <Compile Remove="Migrations\20200701074822_Initial.cs" />
+    <Compile Remove="Migrations\20200701074822_Initial.Designer.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore" Version="3.1.4" />
     <PackageReference Include="Microsoft.EntityFrameworkCore" Version="3.1.4" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.Sqlite" Version="3.1.1" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="3.1.1" />
-    <PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="3.1.1">
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="3.1.4">
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
