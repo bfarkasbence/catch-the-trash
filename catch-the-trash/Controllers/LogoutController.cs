@@ -28,7 +28,7 @@ namespace catch_the_trash.Controllers
         public async Task<IActionResult> LogOut()
         {
             await _signInManager.SignOutAsync();
-            return Ok();
+            return Ok("Logged out");
 
         }
     }
