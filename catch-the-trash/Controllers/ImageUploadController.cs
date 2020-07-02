@@ -25,51 +25,55 @@ namespace catch_the_trash.Controllers
 
         public class FileUploadAPI
         {
-            public IFormFile files { get; set; }
+            public List<IFormFile> files { get; set; }
         }
 
         private string[] permittedExtensions = { ".jpg", ".jpeg", ".png" };
 
         [HttpPost]
-        public async Task<string> Post([FromForm]FileUploadAPI objFile)
+        public async Task<IActionResult> Post([FromForm]FileUploadAPI objFile)
         {
             
 
             try
             {
-                if (objFile.files.Length > 0)
+                if (objFile.files.Count > 0)
                 {
                     if (!Directory.Exists(_environment.WebRootPath + "\\Upload\\"))
                     {
                         Directory.CreateDirectory(_environment.WebRootPath + "\\Upload\\");
                     }
 
-                    var ext = Path.GetExtension(objFile.files.FileName).ToLowerInvariant();
+                    List<string> fileNames = new List<string>();
 
-                    if (permittedExtensions.Contains(ext))
+                    foreach (var file in objFile.files)
                     {
-                        string newFileName = Guid.NewGuid() + ext;
-                            using (FileStream fileStream = System.IO.File.Create(_environment.WebRootPath + "\\Upload\\" + newFileName))
+                        var ext = Path.GetExtension(file.FileName).ToLowerInvariant();
+
+                        if (permittedExtensions.Contains(ext))
                         {
-                            objFile.files.CopyTo(fileStream);
-                            fileStream.Flush();
-                            return newFileName;
+                            string newFileName = Guid.NewGuid() + ext;
+                            using (FileStream fileStream = System.IO.File.Create(_environment.WebRootPath + "\\Upload\\" + newFileName))
+                            {
+                                file.CopyTo(fileStream);
+                                fileStream.Flush();
+                                fileNames.Add(newFileName);
+                            }
                         }
+                       
                     }
-                    else
-                    {
-                        return "Wrong extension";
-                    }
+
+                    return Ok(fileNames);
                 }
                 else
                 {
-                    return "Failed";
+                    return BadRequest();
                 }
             }
             catch (Exception ex)
             {
 
-                return ex.Message.ToString();
+                return BadRequest(ex);
             }
         }
     }
