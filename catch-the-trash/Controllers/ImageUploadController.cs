@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
+using catch_the_trash.Data;
+using catch_the_trash.Models;
 using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
@@ -17,10 +19,11 @@ namespace catch_the_trash.Controllers
     public class ImageUploadController : ControllerBase
     {
         public static IWebHostEnvironment _environment;
-
-        public ImageUploadController(IWebHostEnvironment environment)
+        public readonly ApplicationContext _context;
+        public ImageUploadController(IWebHostEnvironment environment, ApplicationContext context)
         {
             _environment = environment;
+            _context = context;
         }
 
         public class FileUploadAPI
@@ -31,7 +34,7 @@ namespace catch_the_trash.Controllers
         private string[] permittedExtensions = { ".jpg", ".jpeg", ".png" };
 
         [HttpPost]
-        public async Task<IActionResult> Post([FromForm]FileUploadAPI objFile)
+        public async Task<IActionResult> Post([FromForm]FileUploadAPI objFile, [FromForm]int reportId )
         {
             
 
@@ -59,6 +62,10 @@ namespace catch_the_trash.Controllers
                                 fileStream.Flush();
                                 fileNames.Add(newFileName);
                             }
+                            var report = _context.Report.Find(reportId);
+                            var image = new ImageModel {ImageName= newFileName, Report= report };
+                            _context.Image.Add(image);
+                            await _context.SaveChangesAsync();
                         }
                        
                     }
