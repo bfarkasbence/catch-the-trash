@@ -37,6 +37,7 @@ namespace catch_the_trash.Controllers
         public async Task<ActionResult<ReportModel>> GetReport(int id)
         {
             var report = await _context.Report.FindAsync(id);
+            report.Images = _context.Image.Where(i => i.Report.Id == id).Select(i => new ImageModel { Id = i.Id, ImageName = i.ImageName}).ToList();
 
             if (report == null)
             {
