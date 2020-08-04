@@ -9,6 +9,7 @@ using catch_the_trash.Data;
 using catch_the_trash.Models;
 using Microsoft.AspNetCore.Cors;
 using System.Net;
+using catch_the_trash.Utils;
 
 namespace catch_the_trash.Controllers
 {
@@ -24,11 +25,26 @@ namespace catch_the_trash.Controllers
             _context = context;
         }
 
-        // GET: api/Reports
-        [HttpGet]
-        public async Task<ActionResult<IEnumerable<ReportModel>>> GetReport()
+        // GET api/Reports
+        [HttpGet("numberOfReports")]
+        public async Task<ActionResult> GetNumberOfRows()
         {
-            return await _context.Report.ToListAsync();
+            var reports = await _context.Report.ToListAsync();
+            var numberOfReports = reports.Count;
+            return Ok(numberOfReports);
+        }
+
+
+        // GET: api/Reports?page="pageNumber"&size="numberOfRowsPerPage"
+        [HttpGet]
+        public async Task<ActionResult<IEnumerable<ReportModel>>> GetReport([FromQuery(Name ="page")] int pageNumber, [FromQuery(Name ="size")] int pageSize)
+        {
+            var reports = await PaginatedList<ReportModel>.CreateAsync(_context.Report.AsNoTracking(), pageNumber, pageSize);
+            foreach(var report in reports)
+            {
+                report.Images = _context.Image.Where(i => i.Report.Id == report.Id).Select(i => new ImageModel { Id = i.Id, ImageName = i.ImageName }).ToList();
+            }
+            return reports;
         }
 
 
@@ -37,13 +53,12 @@ namespace catch_the_trash.Controllers
         public async Task<ActionResult<ReportModel>> GetReport(int id)
         {
             var report = await _context.Report.FindAsync(id);
-            report.Images = _context.Image.Where(i => i.Report.Id == id).Select(i => new ImageModel { Id = i.Id, ImageName = i.ImageName}).ToList();
 
             if (report == null)
             {
                 return NotFound();
             }
-
+            report.Images = _context.Image.Where(i => i.Report.Id == id).Select(i => new ImageModel { Id = i.Id, ImageName = i.ImageName }).ToList();
             return report;
         }
 
